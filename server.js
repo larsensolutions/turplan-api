@@ -1,6 +1,6 @@
 
 const express = require('express');
-const app = express();
+const app  = express();
 const bodyParser = require('body-parser');
 const readline = require('readline');
 
@@ -9,7 +9,7 @@ const readline = require('readline');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-const port = process.env.PORT || 6666;        // set our port
+const port = process.env.PORT || 5555;        // set our port
 
 // ROUTES FOR OUR API
 // =============================================================================
@@ -17,7 +17,7 @@ var router = express.Router();              // get an instance of the express Ro
 
 // test route to make sure everything is working (accessed at GET http://localhost:8080/api)
 router.get('/', function (req, res) {
-    res.json({ message: 'ho! welcome to our api!' });
+    res.status(200).json({ message: 'ho! welcome to our api!' });
 });
 
 // more routes for our API will happen here
@@ -43,3 +43,5 @@ process.stdin.on('keypress', (str, key) => {
         console.log('Press "ctrl-c" to exit');
     }
 });
+
+module.exports = { app, server};
