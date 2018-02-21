@@ -1,0 +1,19 @@
+{
+  "name": "turplan-api",
+  "version": "1.0.0",
+  "description": "Turplan.no API",
+  "main": "server.js",
+  "scripts": {
+    "start": "supervisor server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Erik Andreas Lasen <erik@larsensolutions.no>",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "express": "^4.16.2"
+  },
+  "devDependencies": {
+    "supervisor": "^0.12.0"
+  }
+}
