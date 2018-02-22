@@ -4,44 +4,47 @@ const app  = express();
 const bodyParser = require('body-parser');
 const readline = require('readline');
 
-// configure app to use bodyParser()
-// this will let us get the data from a POST
+// Configure mongo
+var mongodb = require('mongodb');
+var client = mongodb.MongoClient;
+var uri = "mongodb://mongo/dummy-app";
+
+// Configure app to use bodyParser()
+// Enables getting data from POST
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-const port = process.env.PORT || 5555;        // set our port
+const port = process.env.PORT || 3000; 
 
-// ROUTES FOR OUR API
+// ROUTES
 // =============================================================================
-var router = express.Router();              // get an instance of the express Router
+var router = express.Router();             
 
-// test route to make sure everything is working (accessed at GET http://localhost:8080/api)
+// Test route
 router.get('/', function (req, res) {
-    res.status(200).json({ message: 'ho! welcome to our api!' });
+    // client.connect(uri, function (err, db) {
+    //     console.log(db);
+	//     if (err) return next(err);    
+    // 	var collection = db.collection('dummy');
+    // 	collection.find({}).toArray(function(err, docs) {
+	// 		if (err) return next(err);
+	// 		return res.json(docs);
+    //     });			
+    //     res.status(200).json({ message: 'Did not find any database' });
+    // });
+    res.status(200).json({ message: 'You better believe it!' });
 });
 
 // more routes for our API will happen here
 
 // REGISTER OUR ROUTES -------------------------------
-// all of our routes will be prefixed with /api
+// prefix routes with /api/v1
 app.use('/api/v1', router);
 
 // START THE SERVER
 // =============================================================================
 const server = app.listen(port);
 
-console.log('Magic happens on port ' + port);
-
-
-readline.emitKeypressEvents(process.stdin);
-process.stdin.setRawMode(true);
-process.stdin.on('keypress', (str, key) => {
-    if (key.ctrl && key.name === 'c') {
-        server.close();
-        process.exit();
-    } else {
-        console.log('Press "ctrl-c" to exit');
-    }
-});
+console.log('turplan.no API live on port ' + port);
 
 module.exports = { app, server};
