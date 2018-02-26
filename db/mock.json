@@ -1,0 +1,18 @@
+{
+    "users": [
+        {
+            "_id": 1,
+            "name": "Erik Andreas Larsen"
+        },
+        {
+            "_id": 2,
+            "name": "Jon Olav Nilsen"
+        }
+    ],
+    "trips": [
+        {
+            "uId": 1,
+            "title": "Hardangervidden"
+        }
+    ]
+}

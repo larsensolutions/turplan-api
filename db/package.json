@@ -1,0 +1,11 @@
+{
+  "name": "db",
+  "version": "1.0.0",
+  "description": "Mongo database wrapper and middleware",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Erik Andreas Larsen <eriklarsen.post@gmail.com>",
+  "license": "ISC"
+}

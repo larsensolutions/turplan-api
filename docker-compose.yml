@@ -1,16 +1,16 @@
 version: "3"
 services:
-  web:
-    build: .
+  api:
+    image: node
     ports:
       - "3000:3000"
     links:
       - mongo
+    command: bash -c "npm run start"
+    working_dir: /api
     volumes:
-      - .:/opt/app
+      - .:/api
   mongo:
     image: mongo
-    volumes:
-      - /data/mongodb/db:/data/db
     ports:
       - "27017:27017"
