@@ -14,23 +14,31 @@ class MongoWrapper extends EventEmitter {
     onConnect(err, client){
         if (err) { throw err; }
         this.db = client.db(db);
-        this.seed();
-        this.collectionNames = [];
-        this.db.listCollections({}).forEach((collection)=>{
-            this.collectionNames.push(collection.name);
+        this.seed().then(()=>{ 
+            this.collectionNames = [];
+            this.db.listCollections({}).forEach((collection)=>{
+                this.collectionNames.push(collection.name);
+            });
+            this.emit('ready');
         });
     }
-    seed(){
-        var schema = require('./mock.json');
-       
-        for(let col in schema){
-            let collection = this.db.collection(col);
-            collection.deleteMany({});
-            collection.insertMany(schema[col], function (err, result) {
-                console.log(`Inserted mock data into ${col.toUpperCase()} collection`);
-            });
+    seed(){    
+        function populate(resolve, reject){
+            var schema = require('./mock.json');
+            var collectionsToPopulate = Object.keys(schema).length;
+            for(let col in schema){
+                let collection = this.db.collection(col);
+                collection.deleteMany({});
+                collection.insertMany(schema[col], function (err, result) {
+                    collectionsToPopulate--;
+                    if(collectionsToPopulate==0){
+                        resolve('Success!');
+                    }
+                    console.log(`Inserted mock data into ${col.toUpperCase()} collection`);
+                });
+            }
         }
-        this.emit('ready');
+        return new Promise(populate.bind(this));
     }
 }
 
