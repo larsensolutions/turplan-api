@@ -12,3 +12,13 @@ Run locally
 ```
 $ docker-compose up
 ```
+
+Run tests
+```
+docker-compose run api npm run test
+```
+
+Run coverage
+```
+docker-compose run api npm run cover
+```
