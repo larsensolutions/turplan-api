@@ -14,8 +14,11 @@ class MongoWrapper extends EventEmitter {
     onConnect(err, client){
         if (err) { throw err; }
         this.db = client.db(db);
-        this.types = this.db.listCollections({});
         this.seed();
+        this.collectionNames = [];
+        this.db.listCollections({}).forEach((collection)=>{
+            this.collectionNames.push(collection.name);
+        });
     }
     seed(){
         var schema = require('./mock.json');
@@ -24,17 +27,26 @@ class MongoWrapper extends EventEmitter {
             let collection = this.db.collection(col);
             collection.deleteMany({});
             collection.insertMany(schema[col], function (err, result) {
-                console.log(`Inserted ${col} to database`, result);
+                console.log(`Inserted mock data into ${col.toUpperCase()} collection`);
             });
         }
         this.emit('ready');
     }
 }
+
 const mongo = new MongoWrapper(uri);
 
 module.exports = mongo;
+
 module.exports.middleware = (req, res, next) => {
-    console.log("Appending database to req");
     req.db = mongo.db;
+    req.mongo = mongo;
+    next();
+}
+
+module.exports.param = (req, res, next, col) => {
+    if(col in mongo.collectionNames === false)
+        return res.status(404).json({message: `Collection ${col} not found.`});
+
     next();
 }
