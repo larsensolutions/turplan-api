@@ -2,6 +2,7 @@
 const mongodb = require('mongodb');
 const MongoClient = mongodb.MongoClient;
 const EventEmitter = require('events');
+const Seeder = require('./seeder')
 
 const addr = "mongo", port = "27017", db = "test";
 const uri = `mongodb://${addr}:${port}`;
@@ -9,36 +10,36 @@ const uri = `mongodb://${addr}:${port}`;
 class MongoWrapper extends EventEmitter {
     constructor(uri){
         super();
-        MongoClient.connect(uri, (err, client) => this.onConnect(err, client));
+        this.data = require('./mock.json');
+        this.uri = uri;
     }
     onConnect(err, client){
         if (err) { throw err; }
+        this.client = client;
         this.db = client.db(db);
-        this.seed().then(()=>{ 
-            this.collectionNames = [];
-            this.db.listCollections({}).forEach((collection)=>{
-                this.collectionNames.push(collection.name);
-            });
+
+        Seeder.seed(this.db).with(this.data).then((ok)=>{
+            console.log(ok.status);
+            this.collectionNames = ok.collectionNames;
             this.emit('ready');
+        }, (error)=>{
+            console.log(error);
         });
     }
-    seed(){    
-        function populate(resolve, reject){
-            var schema = require('./mock.json');
-            var collectionsToPopulate = Object.keys(schema).length;
-            for(let col in schema){
-                let collection = this.db.collection(col);
-                collection.deleteMany({});
-                collection.insertMany(schema[col], function (err, result) {
-                    collectionsToPopulate--;
-                    if(collectionsToPopulate==0){
-                        resolve('Success!');
-                    }
-                    console.log(`Inserted mock data into ${col.toUpperCase()} collection`);
-                });
-            }
-        }
-        return new Promise(populate.bind(this));
+    getCollectionNames(req, res){
+        var names = [];
+        this.db.listCollections().toArray(function(err, items) {
+            names = items.map(item => {
+                return item.name;
+            });
+            res.status(200).json({Items: names});
+        });
+    }
+    disconnect(){
+        this.client.close();
+    }
+    connect(){
+        MongoClient.connect(this.uri, (err, client) => this.onConnect(err, client));
     }
 }
 
@@ -46,15 +47,8 @@ const mongo = new MongoWrapper(uri);
 
 module.exports = mongo;
 
-module.exports.middleware = (req, res, next) => {
-    req.db = mongo.db;
-    req.mongo = mongo;
-    next();
-}
-
 module.exports.param = (req, res, next, col) => {
     if(col in mongo.collectionNames === false)
         return res.status(404).json({message: `Collection ${col} not found.`});
-
     next();
 }

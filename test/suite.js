@@ -1,12 +1,16 @@
 const assert = require("assert");
 const request = require('supertest');
-const app = require('../server').app;
+const app = require('../server/server').app;
+const db = require('../server/server').MongoWrapper;
+
+require('./unit/seeder')
 
 /* Test suite*/
-describe('Turplan.no API', function () {
+describe('Turplan.no API Integration Tests', function () {
 
-    /* Spin up mongodb and populate with data, before conducting any tests */
+    /* Spin up mongodb and populate with data, before conducting any integration tests */
     before(function (done) {
+        db.connect();
         app.once("ready", function () {
             done();
         })
@@ -14,10 +18,10 @@ describe('Turplan.no API', function () {
 
     /* Clean up and close server after tests */
     after(function () {
-        process.exit();
+        app.close();
     });
 
-    /* TESTS */
+    /* Integration tests */
 
     describe('GET /api/v1', function () {
         it('should return 200', function (done) {
@@ -43,6 +47,32 @@ describe('Turplan.no API', function () {
                 .get('/api/v1/collections')
                 .expect('Content-Type', /json/)
                 .expect({ "Items": ["trips", "users"] })
+                .end(function (err, res) {
+                    if (err) return done(err);
+                    done();
+                });
+        });
+    });
+
+    describe('GET /api/v1/{collection} that doesnt exist', function () {
+        it('should return 404', function (done) {
+            request(app)
+                .get('/api/v1/doesntexists', {})
+                .expect('Content-Type', /json/)
+                .expect(404)
+                .end(function (err, res) {
+                    if (err) return done(err);
+                    done();
+                });
+        });
+    });
+
+    describe('GET /api/v1/{collection}/{id} that doesnt exist', function () {
+        it('should return 404', function (done) {
+            request(app)
+                .get('/api/v1/trips/1', {})
+                .expect('Content-Type', /json/)
+                .expect(404)
                 .end(function (err, res) {
                     if (err) return done(err);
                     done();
