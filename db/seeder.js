@@ -1,4 +1,5 @@
 'use strict'
+//TODO: Refactor all
 
 /* Private functions */
 var _populate = function(resolve, reject){

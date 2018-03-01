@@ -1,20 +1,20 @@
 const express = require('express');
-const MongoWrapper = require('../db');
+const mongoDB = require('../db');
 
 var router = express.Router();   
-
-/* GET Collections */
-router.get('/collections', function (req, res) {
-    MongoWrapper.getCollectionNames(req, res);
-});
 
 /* GET  / */
 router.get('/', function (req, res) {
     res.status(200).json({ message: 'You better believe it!'});
 });
 
-/* ALL /{collection} */
-router.param('collection', MongoWrapper.param);
+/* GET collections */
+router.get('/collections', function (req, res) {
+    mongoDB.getCollectionNames(req, res);
+});
+
+/* GET all /{collection} */
+router.param('collection', mongoDB.param);
 router.get('/:collection', function (req, res) {
     switch (req.method){
         case 'GET':
@@ -25,8 +25,8 @@ router.get('/:collection', function (req, res) {
     }
 });
 
-/* ALL /{collection}/{id} */
-router.param('id', MongoWrapper.param);
+/* GET single /{collection}/{id} */
+router.param('id', mongoDB.param);
 router.get('/:collection/:id', function (req, res) {
     switch (req.method){
         case 'GET':

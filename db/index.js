@@ -1,19 +1,19 @@
 "use strict";
+//TODO: Refactor all
+
 const mongodb = require('mongodb');
 const MongoClient = mongodb.MongoClient;
-const EventEmitter = require('events');
 const Seeder = require('./seeder')
 
 const addr = "mongo", port = "27017", db = "test";
 const uri = `mongodb://${addr}:${port}`;
 
-class MongoWrapper extends EventEmitter {
+class MongoWrapper {
     constructor(uri){
-        super();
         this.data = require('./mock.json');
         this.uri = uri;
     }
-    onConnect(err, client){
+    onConnect(err, client, resolve, reject){
         if (err) { throw err; }
         this.client = client;
         this.db = client.db(db);
@@ -21,7 +21,7 @@ class MongoWrapper extends EventEmitter {
         Seeder.seed(this.db).with(this.data).then((ok)=>{
             console.log(ok.status);
             this.collectionNames = ok.collectionNames;
-            this.emit('ready');
+            resolve();
         }, (error)=>{
             console.log(error);
         });
@@ -39,7 +39,9 @@ class MongoWrapper extends EventEmitter {
         this.client.close();
     }
     connect(){
-        MongoClient.connect(this.uri, (err, client) => this.onConnect(err, client));
+        return new Promise((resolve, reject) => {
+            MongoClient.connect(this.uri, (err, client) => this.onConnect(err, client, resolve, reject));
+        });
     }
 }
 
