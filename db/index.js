@@ -53,8 +53,8 @@ module.exports.middleware = (req, res, next) => {
 }
 
 module.exports.param = (req, res, next, col) => {
-    if(col in mongo.collectionNames === false)
+    if(!mongo.collectionNames.includes(col)){
         return res.status(404).json({message: `Collection ${col} not found.`});
-
+    }
     next();
 }
