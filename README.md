@@ -32,7 +32,7 @@ docker-compose run api npm run cover
 
 ## Maintainers
 
-[@erik](https://github.com/larsensolutions).
+[@erik](https://github.com/larsensolutions)
 
 ## Contribute
 
