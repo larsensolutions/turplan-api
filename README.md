@@ -8,24 +8,7 @@
 
 [UT.no](https://ut.no) uses the [nasjonalturbase.no API](http://www.nasjonalturbase.no/) to store data, which is public and open. Because of this, it is possible to extend [UT.no](https://ut.no) functionality and create a planning tool that can use the hike data already available.
 
-This API should first enable the possiblity to create hike plans. Basically, a plan would give oppertunity to split the hike route into legs (parts) and attach more data. Consider the following pseudo data:
-
-> Plan: Paddle the fjord of Hardanger
->> Desription
->> Participants
->> GPS track, total distance and duration
->> Leg: Day 1
->>> GPS track, duration and distance
->>> Stops along the way:
->>>> Good place to fish and have lunch
->> Leg: Day 2
->>> GPS track, duration and distance
->>> Stops along the way:
->>>> Visit the nice waterfall (Steinsdalsfossen)
->> Leg: Day 3
->>> GPS track, duration and distance
->>> Stops along the way:
->>>> Visit the nice waterfall (Steinsdalsfossen)
+This API should first enable the possiblity to create hike plans. Basically, a plan would give oppertunity to split the hike route into legs (parts) and attach more data like stops along the way, interesting sights etc.
 
 ### Getting started
 
