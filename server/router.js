@@ -14,11 +14,14 @@ router.get('/collections', function (req, res) {
 });
 
 /* GET all /{collection} */
-router.param('collection', mongoDB.param);
-router.get('/:collection', function (req, res) {
+router.param('collection', mongoDB.collectionParam);
+router.all('/:collection', function (req, res) {
     switch (req.method) {
         case 'GET':
-            mongoDB.getDocuments(req, res);
+            mongoDB.get(req, res);
+            break;
+        case 'POST':
+            mongoDB.post(req, res);
             break;
         default:
             res.status(405).json({ message: `HTTP Method #${req.method.toUpperCase()} Not Allowed` });
@@ -26,11 +29,20 @@ router.get('/:collection', function (req, res) {
 });
 
 /* GET single /{collection}/{id} */
-router.param('id', mongoDB.param);
-router.get('/:collection/:id', function (req, res) {
+router.param('id', mongoDB.documentParam);
+router.all('/:collection/:id', function (req, res) {
     switch (req.method) {
         case 'GET':
-            res.status(200).json({ message: "Or not to be" });
+            mongoDB.getDocument(req, res);
+            break;
+        case 'PUT':
+            mongoDB.putDocument(req, res);
+            break;
+        case 'PATCH':
+            mongoDB.patchDocument(req, res);
+            break;
+        case 'DELETE':
+            mongoDB.deleteDocument(req, res);
             break;
         default:
             res.status(405).json({ message: `HTTP Method #${req.method.toUpperCase()} Not Allowed` });
