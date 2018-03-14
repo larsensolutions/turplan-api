@@ -77,7 +77,7 @@ class MongoWrapper {
             if (err) {
                 res.status(500).json(new Error(err));
             } else if (doc) {
-                res.status(200).json(doc);
+                res.status(204).json(doc);
             } else {
                 res.status(404).json({ "message": "Not found" });
             }
@@ -93,7 +93,7 @@ class MongoWrapper {
             if (err) {
                 res.status(500).json(new Error(err));
             } else if (doc) {
-                res.status(200).json(doc);
+                res.status(204).json(doc);
             } else {
                 res.status(404).json({ "message": "Not found" });
             }
@@ -101,11 +101,10 @@ class MongoWrapper {
     }
     deleteDocument(req, res){
         this.db.collection(req.params.collection).deleteOne({ "_id": Number(req.params.id) }, (err, doc) => {
-            console.log(doc);
             if (err) {
                 res.status(500).json(new Error(err));
-            } else if (doc.deletedCount>0) {
-                res.status(204).json({ "message": "No content" });
+            } else if (doc.deletedCount > 0) {
+                res.status(204).json({ "message": "No Content" });;
             } else {
                 res.status(404).json({ "message": "Not found" });
             }
