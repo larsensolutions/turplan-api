@@ -6,7 +6,7 @@
 ### Purpose of the API
 [UT.no](https://ut.no) provides a great service to search for possible hikes in Norway. However, it only provides an overview over the hikes, and it is not possible to plan a hike in details using the app (in a convenient way, anyways). This could be especially useful for multi day hikes.
 
-[UT.no](https://ut.no) uses the [nasjonalturbase.no API](http://www.nasjonalturbase.no/) to store data, which is public and open. Because of this, it is possible to extend [UT.no](https://ut.no)functionality and create a planning tool that can use the hike data already available.
+[UT.no](https://ut.no) uses the [nasjonalturbase.no API](http://www.nasjonalturbase.no/) to store data, which is public and open. Because of this, it is possible to extend [UT.no](https://ut.no) functionality and create a planning tool that can use the hike data already available.
 
 This API should first enable the possiblity to create hike plans based upon existing data. In the future, it should also contribute with input to the [nasjonalturbase.no API](http://www.nasjonalturbase.no/), i.e creating plans from scratch.
 
