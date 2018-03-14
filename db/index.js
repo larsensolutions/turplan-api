@@ -39,7 +39,13 @@ class MongoWrapper {
             "limit": Number(req.query.limit) || 20,
             "skip": Number(req.query.skip) || 0
         }
-        var cursor = this.db.collection(req.params.collection).find({}, options);
+        var fields = {};
+        if(req.query.fields && typeof req.query.fields === 'string'){
+            for(let field of req.query.fields.split(',')){
+                fields[field] = true;
+            }
+        }
+        var cursor = this.db.collection(req.params.collection).find({}, options).project(fields) ;
         cursor.count(false, (err, total) => {
             cursor.toArray((err, docs) => { // Loads all into memory, should avoid this, use stream/pipe instead
                 if (err) {
@@ -60,9 +66,14 @@ class MongoWrapper {
             }
         })
     }
-
     getDocument(req, res) {
-        this.db.collection(req.params.collection).findOne({ "_id": Number(req.params.id) }, (err, doc) => {
+        var fields = {};
+        if(req.query.fields && typeof req.query.fields === 'string'){
+            for(let field of req.query.fields.split(',')){
+                fields[field] = true;
+            }
+        }
+        this.db.collection(req.params.collection).findOne({ "_id": Number(req.params.id)},{projection:fields}, (err, doc) => {
             if (err) {
                 res.status(500).json(new Error(err));
             } else if (doc) {
@@ -99,7 +110,7 @@ class MongoWrapper {
             }
         });
     }
-    deleteDocument(req, res){
+    deleteDocument(req, res) {
         this.db.collection(req.params.collection).deleteOne({ "_id": Number(req.params.id) }, (err, doc) => {
             if (err) {
                 res.status(500).json(new Error(err));
@@ -124,16 +135,13 @@ const mongo = new MongoWrapper(uri);
 
 module.exports = mongo;
 
-
 /*Parameter validations */
-
 module.exports.collectionParam = (req, res, next, col) => {
     if (!mongo.collectionNames.includes(col)) {
         return res.status(404).json({ message: `Collection ${col} not found.` });
     }
     next();
 }
-
 module.exports.documentParam = (req, res, next, id) => {
     if (isNaN(id)) {
         return res.status(400).json({ message: 'Invalid id' })

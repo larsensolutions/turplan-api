@@ -5,7 +5,7 @@ var router = express.Router();
 
 /* GET  / */
 router.get('/', function (req, res) {
-    res.status(200).json({ message: 'You better believe it!' });
+    res.status(200).json({ message: 'What you are is what you have been. What you’ll be is what you do now.' });
 });
 
 /* GET collections */
@@ -13,7 +13,7 @@ router.get('/collections', function (req, res) {
     mongoDB.getCollectionNames(req, res);
 });
 
-/* GET all /{collection} */
+/* ALL /{collection} */
 router.param('collection', mongoDB.collectionParam);
 router.all('/:collection', function (req, res) {
     switch (req.method) {
@@ -28,7 +28,7 @@ router.all('/:collection', function (req, res) {
     }
 });
 
-/* GET single /{collection}/{id} */
+/* ALL /{collection}/{id} */
 router.param('id', mongoDB.documentParam);
 router.all('/:collection/:id', function (req, res) {
     switch (req.method) {
